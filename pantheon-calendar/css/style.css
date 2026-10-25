@@ -1,0 +1,87 @@
+/* style.css — 見た目 */
+
+:root {
+  --bg: #0e1626;      /* 夜空 */
+  --fg: #e6dcc4;      /* 文字 */
+  --dim: #7d8aa3;     /* 薄い文字 */
+  --day: #c98d4c;     /* その日の神の色（app.js が書き換える） */
+  --font-latin: "Cormorant SC", "Cinzel", Georgia, serif;
+  --font-jp: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-jp);
+  color: var(--fg);
+  /* 上からその日の色の光が差す */
+  background:
+    radial-gradient(120% 70% at 50% 18%, color-mix(in srgb, var(--day) 30%, transparent), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+  /* ホーム画面から開くと時計・ノッチの下まで画面になるので、そのぶん空ける */
+  padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(40px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  transition: background .4s;
+}
+
+.app { max-width: 560px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+/* 上のボタン */
+.nav { align-self: flex-end; display: flex; gap: 6px; }
+.nav button {
+  background: none; color: inherit; border: 1px solid currentColor; border-radius: 6px;
+  height: 30px; min-width: 34px; padding: 0 10px; cursor: pointer; opacity: .75; font: 14px var(--font-jp);
+}
+.nav button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+.date { font-size: 12px; color: var(--dim); letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+.hint { font-size: 11px; color: var(--dim); letter-spacing: .2em; opacity: .7; }
+
+/* 盤 */
+#dial { width: min(100%, 520px); touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+#dial.dragging { cursor: grabbing; }
+#ring, .emblem { transition: transform 1.1s cubic-bezier(.6, .05, .25, 1); }
+#dial.dragging #ring, #dial.dragging .emblem { transition: none; }   /* ドラッグ中は指に直結 */
+.sector { stroke: var(--bg); stroke-width: 2; transition: fill-opacity .3s; }
+.emblem svg { fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.emblem { transition: transform 1.1s cubic-bezier(.6, .05, .25, 1), color .3s; }
+#glow-start { stop-color: var(--day); }
+#pointer path { fill: var(--day); }
+#pointer { transform-origin: 200px 6px; }
+#pointer.tick { animation: tick .18s ease-out; }
+@keyframes tick { 0% { transform: scale(1.6) translateY(3px); } 100% { transform: none; } }
+
+/* 名前など */
+.name { font: 700 clamp(52px, 14vw, 84px)/1 var(--font-latin); letter-spacing: .1em; color: var(--day); }
+.kana { font: 600 15px var(--font-jp); letter-spacing: .2em; }
+.role { font: 600 18px var(--font-jp); margin-top: 8px; }
+.extra { font-size: 12px; color: var(--dim); }
+
+/* 14日の進み具合 */
+#progress { display: flex; gap: 5px; margin-top: 14px; }
+#progress i { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid; }
+
+/* アイコンのバッジを有効にするボタン（ホーム画面から開いたときだけ出る） */
+.badge-btn {
+  margin-top: 18px; background: none; color: inherit; border: 1px solid currentColor; border-radius: 6px;
+  padding: 8px 14px; cursor: pointer; opacity: .75; font: 13px var(--font-jp);
+}
+.badge-btn[hidden] { display: none; }
+
+/* 神話（押すと開く） */
+.more { margin-top: 14px; max-width: 32em; width: 100%; }
+.more summary {
+  cursor: pointer; list-style: none; text-align: center; padding: 8px;
+  font: 600 12px var(--font-jp); letter-spacing: .2em; color: var(--dim);
+}
+.more summary::-webkit-details-marker { display: none; }
+.symbols { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 8px; }
+.symbols span { font-size: 12px; padding: 5px 10px; border: 1px solid #23324d; border-radius: 999px; background: #13203a; }
+.more p { font-size: 14px; line-height: 1.9; margin: 10px 0 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  #ring, .emblem, #pointer.tick { transition: none; animation: none; }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "ガマン階段",
+  "short_name": "ガマン階段",
+  "description": "スマホを我慢した時間だけ階段を昇る。昇るほど景色が変わっていく。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#141a38",
+  "theme_color": "#141a38",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

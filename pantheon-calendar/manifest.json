@@ -1,0 +1,16 @@
+{
+  "name": "Pantheon Calendar",
+  "short_name": "Pantheon",
+  "description": "月の満ち欠けに合わせた14日周期の神話暦",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e1626",
+  "theme_color": "#0e1626",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

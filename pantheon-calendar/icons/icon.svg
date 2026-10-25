@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- 夜空に14の刻みと三日月。余白を広めにとってあるので丸く切り抜かれても欠けない -->
+  <defs>
+    <radialGradient id="g" cx="50%" cy="38%" r="70%">
+      <stop offset="0" stop-color="#2a2a3a"/>
+      <stop offset="1" stop-color="#0e1626"/>
+    </radialGradient>
+    <mask id="m">
+      <rect width="512" height="512" fill="#fff"/>
+      <circle cx="300" cy="232" r="82" fill="#000"/>
+    </mask>
+  </defs>
+  <rect width="512" height="512" fill="url(#g)"/>
+  <g transform="translate(256 256)" stroke="#c98d4c" stroke-width="10" stroke-linecap="round">
+    <circle r="150" fill="none" stroke-width="4" opacity=".55"/>
+    <g id="t"><line y1="-150" y2="-128"/></g>
+    <use href="#t" transform="rotate(25.714)"/><use href="#t" transform="rotate(51.429)"/>
+    <use href="#t" transform="rotate(77.143)"/><use href="#t" transform="rotate(102.857)"/>
+    <use href="#t" transform="rotate(128.571)"/><use href="#t" transform="rotate(154.286)"/>
+    <use href="#t" transform="rotate(180)"/><use href="#t" transform="rotate(205.714)"/>
+    <use href="#t" transform="rotate(231.429)"/><use href="#t" transform="rotate(257.143)"/>
+    <use href="#t" transform="rotate(282.857)"/><use href="#t" transform="rotate(308.571)"/>
+    <use href="#t" transform="rotate(334.286)"/>
+  </g>
+  <circle cx="256" cy="256" r="92" fill="#e6dcc4" mask="url(#m)"/>
+</svg>

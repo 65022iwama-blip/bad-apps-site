@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pantheon Calendar</title>
+  <!-- ホーム画面に置いたとき用：アプリとして全画面で開く -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <meta name="theme-color" content="#0e1626">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pantheon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@500;700&family=Shippori+Mincho:wght@400;600;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="app">
+    <div class="nav">
+      <button id="prev" aria-label="前の日">‹</button>
+      <button id="today">今日</button>
+      <button id="next" aria-label="次の日">›</button>
+    </div>
+
+    <div class="date" id="date"></div>
+    <div class="hint">盤をまわして日を送る</div>
+
+    <!-- 盤：#ring が回る。月と針は回らない -->
+    <svg id="dial" viewBox="0 0 400 400" role="img" aria-label="14日の天球盤">
+      <defs>
+        <radialGradient id="glow">
+          <stop id="glow-start" offset="0" stop-opacity=".55"/>
+          <stop offset="1" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="200" cy="200" r="110" fill="url(#glow)"/>
+      <g id="ring" style="transform-origin:200px 200px"></g>
+      <g id="pointer"><path d="M200 18 L191 6 L209 6Z"/></g>
+      <foreignObject x="140" y="140" width="120" height="120"><div id="moon"></div></foreignObject>
+    </svg>
+
+    <div class="name" id="name"></div>
+    <div class="kana" id="kana"></div>
+    <div class="role" id="role"></div>
+    <div class="extra" id="extra" hidden>延長日</div>
+    <div id="progress" aria-hidden="true"></div>
+
+    <details class="more">
+      <summary>神話をひらく</summary>
+      <div class="symbols" id="symbols"></div>
+      <p id="myth"></p>
+    </details>
+
+    <button class="badge-btn" id="badge-btn" hidden>アイコンに今日の日数を出す</button>
+  </main>
+
+  <!-- 読み込み順に意味がある：データ → 計算 → 画面 -->
+  <script src="js/pantheon.js"></script>
+  <script src="js/moon.js"></script>
+  <script src="js/cycle.js"></script>
+  <script src="js/feedback.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // 電波がなくても開けるように（http(s) で開いたときだけ動く）
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+  </script>
+</body>
+</html>

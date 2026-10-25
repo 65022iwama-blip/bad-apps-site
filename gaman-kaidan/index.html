@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ガマン階段</title>
+  <meta name="description" content="スマホを我慢した時間だけ階段を昇る。昇るほど景色が変わっていく。">
+  <!-- ホーム画面に置いたとき用：アプリとして全画面で開く -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <meta name="theme-color" content="#141a38">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ガマン階段">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="app">
+    <section class="stage">
+      <canvas id="scene" aria-label="いま昇っている階段と景色"></canvas>
+      <div class="hud">
+        <div class="hud-top">
+          <span class="brand">ガマン階段</span>
+          <button id="btn-settings" class="icon-btn" aria-label="せってい">⚙</button>
+        </div>
+        <div class="floor"><span id="floor-num">地上</span><small id="floor-unit"></small></div>
+        <div class="zone" id="zone-name"></div>
+        <div class="next" id="next-info"></div>
+      </div>
+      <div class="banner" id="banner" hidden>
+        <span class="new">NEW</span>
+        <small>新しい景色にたどり着いた</small>
+        <b id="banner-name"></b>
+        <em id="banner-count"></em>
+      </div>
+      <div class="pop" id="pop"></div>
+    </section>
+
+    <section class="panel">
+      <div class="stats">
+        <div><b id="stat-saved">0分</b><span>我慢した時間</span></div>
+        <div><b id="stat-streak">0日</b><span>連続達成</span></div>
+        <div><b id="stat-goal">-</b><span>1日の目標</span></div>
+      </div>
+      <button class="primary" id="btn-record">今日のスクリーンタイムを記録</button>
+      <nav class="sub">
+        <button id="btn-share">シェア</button>
+        <button id="btn-book">景色図鑑</button>
+        <button id="btn-history">きろく</button>
+      </nav>
+    </section>
+  </main>
+
+  <!-- はじめての人 -->
+  <dialog id="dlg-welcome">
+    <div class="sheet">
+      <h2>ガマン階段へようこそ</h2>
+      <ol class="rules">
+        <li>1日のスクリーンタイムの<b>目標</b>を決める</li>
+        <li>夜、スクリーンタイムの<b>スクショ</b>を入れる</li>
+        <li>目標より少なかった分だけ<b>階段を昇る</b><br><small>1時間がまんで1階。使いすぎると少し落ちる</small></li>
+        <li>昇るほど<b>景色が変わる</b>。最初はすぐ、だんだん遠くなる。てっぺんには何がある？</li>
+      </ol>
+      <label class="field">1日の目標
+        <select id="welcome-goal"></select>
+      </label>
+      <p class="note">ふだんより少しだけ短くするのがコツ。あとで変えられます。</p>
+      <button class="primary" id="welcome-ok">はじめる</button>
+    </div>
+  </dialog>
+
+  <!-- 記録する -->
+  <dialog id="dlg-record">
+    <div class="sheet">
+      <h2>スクリーンタイムを記録</h2>
+      <div id="rec-pick">
+        <label class="pick">📷 スクショを選ぶ
+          <input type="file" id="rec-file" accept="image/*" hidden>
+        </label>
+        <p class="note">設定 → スクリーンタイム → 「すべてのアクティビティを確認」で、<b>その日</b>の画面をスクショしてね。読み取りはこの端末の中だけで行います。</p>
+        <button class="link" id="rec-manual">スクショなしで数字を入れる</button>
+      </div>
+      <div id="rec-read" hidden>
+        <img id="rec-thumb" alt="">
+        <div class="bar"><i id="ocr-bar"></i></div>
+        <p class="note" id="ocr-status"></p>
+      </div>
+      <div id="rec-form" hidden>
+        <p class="note" id="rec-msg"></p>
+        <div class="cands" id="rec-cands"></div>
+        <div class="time-in">
+          <input type="number" id="rec-h" min="0" max="24" inputmode="numeric"> 時間
+          <input type="number" id="rec-m" min="0" max="59" inputmode="numeric"> 分
+        </div>
+        <label class="field">日付 <input type="date" id="rec-date"></label>
+        <div class="result" id="rec-result"></div>
+        <button class="primary" id="rec-ok">記録して昇る</button>
+      </div>
+      <button class="close" data-close>とじる</button>
+    </div>
+  </dialog>
+
+  <!-- シェア -->
+  <dialog id="dlg-share">
+    <div class="sheet">
+      <h2>今の景色をシェア</h2>
+      <img id="share-img" class="share-img" alt="今いる景色の画像">
+      <p class="note" id="share-hint"></p>
+      <button class="primary" id="share-go">画像をシェア</button>
+      <a class="secondary" id="share-x" target="_blank" rel="noopener">Xに投稿する文章を開く</a>
+      <button class="close" data-close>とじる</button>
+    </div>
+  </dialog>
+
+  <!-- 景色図鑑 -->
+  <dialog id="dlg-book">
+    <div class="sheet">
+      <h2>景色図鑑</h2>
+      <div class="book" id="book"></div>
+      <button class="close" data-close>とじる</button>
+    </div>
+  </dialog>
+
+  <!-- きろく -->
+  <dialog id="dlg-history">
+    <div class="sheet">
+      <h2>きろく</h2>
+      <ul class="history" id="history"></ul>
+      <button class="close" data-close>とじる</button>
+    </div>
+  </dialog>
+
+  <!-- せってい -->
+  <dialog id="dlg-settings">
+    <div class="sheet">
+      <h2>せってい</h2>
+      <label class="field">1日の目標
+        <select id="set-goal"></select>
+      </label>
+      <p class="note">変えた目標は、これから記録する日から使われます。</p>
+      <button class="danger" id="set-reset">記録をぜんぶ消す</button>
+      <button class="close" data-close>とじる</button>
+    </div>
+  </dialog>
+
+  <script src="js/scenes.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
